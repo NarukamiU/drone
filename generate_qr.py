@@ -1,32 +1,44 @@
 import qrcode
 
-# 変数の値
-v = "4"
-range_val = "5"
-takeoff_val = "1"
-land_val = "0"
-
-# データをデリミタで結合
-data = f"v={v},range={range_val},takeoff={takeoff_val},land={land_val}"
-
-# QRコードを生成
-qr = qrcode.QRCode(
-    version=1,
-    error_correction=qrcode.constants.ERROR_CORRECT_L,
-    box_size=10,
-    border=4,
-)
-qr.add_data(data)
-qr.make(fit=True)
-
-# ファイル名を構築
-file_name = f"v{v}_range{range_val}_takeoff{takeoff_val}_land{land_val}.png"
+# 各コマンドに対応するデータを設定
+commands = {
+    "takeoff": 0,
+    "land": 0,
+    "left": 30,  # 未定
+    "right": 0,  # 未定
+    "up": 0,
+    "down": 0,
+    "rotate_clockwise": 0,
+    "flip": ""  # 未定方向
+}
 
 # ファイルパスを指定
-file_path = f"C:\\DATA\\program\\drone\\img_qr\\{file_name}"
+file_path = "C:\\DATA\\program\\drone\\img_qr\\"
 
-# 生成したQRコードを指定したファイルパスに保存
-img = qr.make_image(fill_color="black", back_color="white")
-img.save(file_path)
+# 各QRコードを生成
+for command, value in commands.items():
+    # 値が0または空の場合はスキップ
+    if not value:
+        continue
 
-print(f"QRコードを {file_path} に保存しました。")
+    # ファイル名を生成
+    file_name = f"{command}_{value}.png"
+
+    # QRコードのデータを生成
+    data = f"{command}:{value}"
+
+    # QRコードを生成
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    # QRコードを保存
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(file_path + file_name)
+
+    print(f"QRコードを {file_path}{file_name} に保存しました.")
